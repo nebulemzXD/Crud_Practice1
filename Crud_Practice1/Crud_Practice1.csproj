@@ -1887,6 +1887,8 @@
     <Compile Include="Attachments.aspx.designer.cs">
       <DependentUpon>Attachments.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Classes\clsCRUD.cs" />
+    <Compile Include="Classes\clsUtil.cs" />
     <Compile Include="Contact.aspx.cs">
       <DependentUpon>Contact.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1957,7 +1959,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />
-    <Folder Include="Classes\" />
     <Folder Include="Images\" />
   </ItemGroup>
   <ItemGroup>

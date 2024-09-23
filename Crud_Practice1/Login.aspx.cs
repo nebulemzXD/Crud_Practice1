@@ -58,6 +58,7 @@ namespace Crud_Practice1
             {
                 if (dt.Rows[0]["IsActive"].ToString().Trim() == "X")
                 {
+                    Session["StudentID"] = dt.Rows[0]["StudentID"].ToString();
                     Session["Name"] = dt.Rows[0]["Name"].ToString();
                     Session["Email"] = dt.Rows[0]["Email"].ToString();
 

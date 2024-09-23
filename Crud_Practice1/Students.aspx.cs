@@ -301,31 +301,53 @@ namespace Crud_Practice1
                     string fileName = Path.GetFileName(pFile.FileName);
                     string contentType = pFile.ContentType;
 
-                    // Convert file to byte array
-                    byte[] fileData;
-                    using (Stream fs = pFile.InputStream)
+                    
+                    ExcelPackage pck = new ExcelPackage(fileUpload.PostedFiles[i].InputStream);
+                    ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+                    using (pck)
                     {
-                        using (BinaryReader br = new BinaryReader(fs))
+                        ExcelWorksheet worksheet = pck.Workbook.Worksheets[1];
+
+                        int row = 2;
+
+                        while (worksheet.Cells[row, 1].Text != "")
                         {
-                            fileData = br.ReadBytes((int)fs.Length);
+                            string name, email, gender, birthdate;
 
-                            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["dbSTUDENTINFO"].ConnectionString))
-                            {
-                                string query = "EXEC sp_t_update_attachment @FileName, @ContentType, @FileData, @StudentID";
+                            name = worksheet.Cells[row, 1].Text.ToString();
+                            email = worksheet.Cells[row, 2].Text.ToString();
+                            gender = worksheet.Cells[row, 3].Text.ToString();
+                            birthdate = worksheet.Cells[row, 4].Text.ToString();
 
-                                using (SqlCommand cmd = new SqlCommand(query, conn))
-                                {
-                                    cmd.Parameters.AddWithValue("@FileName", fileName);
-                                    cmd.Parameters.AddWithValue("@ContentType", contentType);
-                                    cmd.Parameters.AddWithValue("@FileData", fileData);
-                                    cmd.Parameters.AddWithValue("@StudentID", studentID);
+                            string sql;
+                            sql = "";
+                            sql = "INSERT INTO Students (Name, Email, Gender, Birthdate) VALUES ('" + name + "', '" + email + "', '" + gender + "', '" + birthdate + "')";
 
-                                    conn.Open();
-                                    cmd.ExecuteNonQuery();
-                                }
-                                toast("Successfully Uploaded File!", "success", this);
-                            }
+                            clsCRUD.executeQuery(sql);
+
+                            row++;
+
                         }
+
+                        byte[] fileData = pck.GetAsByteArray();
+
+                        using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["dbSTUDENTINFO"].ConnectionString))
+                        {
+                            string query = "EXEC sp_t_update_attachment @FileName, @ContentType, @FileData, @StudentID";
+
+                            using (SqlCommand cmd = new SqlCommand(query, conn))
+                            {
+                                cmd.Parameters.AddWithValue("@FileName", fileName);
+                                cmd.Parameters.AddWithValue("@ContentType", contentType);
+                                cmd.Parameters.AddWithValue("@FileData", fileData);
+                                cmd.Parameters.AddWithValue("@StudentID", studentID);
+
+                                conn.Open();
+                                cmd.ExecuteNonQuery();
+                            }
+                            toast("Successfully Uploaded File!", "success", this);
+                        }
+
                     }
                 }
             }

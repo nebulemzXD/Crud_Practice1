@@ -13,5 +13,17 @@ namespace Crud_Practice1
         {
 
         }
+
+        protected void btnLogout_Click(object sender, EventArgs e)
+        {
+            // Clear all sessions
+            Session.Clear();
+
+            // Optionally abandon the session
+            Session.Abandon();
+
+            // Redirect to the login page
+            Response.Redirect("~/Login.aspx");
+        }
     }
 }
